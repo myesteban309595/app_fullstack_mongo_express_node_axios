@@ -1,7 +1,9 @@
 import express from 'express'
 import cors from 'cors'
+import XLSX from 'xlsx'
+
 import dbAutenticathe from './utils/dbAuthentication.js'
-//import {ExcelToJson} from './utils/ReadExcel'
+import ExcelToJson from './utils/ReadExcel.js'
 
 const app = express()
 
@@ -17,38 +19,35 @@ app.get('/', (req,res)=> {
 })
 
 import blogs from './routes/blogRoute.js'
-import uploadImages from './routes/uploadImages.route.js'
+//import uploadDocumentFile from './routes/load.route.js'
 
 app.use('/task', blogs)
-app.use('/images', uploadImages)
+//app.use('/',uploadDocumentFile)
 
-dbAutenticathe()
+//^  ======   PROBANDO EL IMPORTE DE MULTER  ===============
+import multer from 'multer'
+const route = express.Router()
 
-import XLSX from 'xlsx'
+export const storage = multer.diskStorage({
+  destination: (req, file,callback) => {
+      callback(null, path.join(__dirname,'../uploads/')) //^ <-------  aqui pasamos la ruta de carga
+     },
+     filename: (req,file, callback)=>{
+         callback(null,file.originalname)  //^ <-------  aqui obtenems nombre  de los archivos
+     }
+ })
+ 
+export const Upload = multer({storage}) 
 
-const ExcelToJson = ()=> {
-    const excel = XLSX.readFile('D:\\Documentos\\Desktop\\app_fullstack_mongo_express_node_axios\\backendNode\\src\\DataBase_datos_exported.xls');
+route.post('/subir', Upload.single('archivo'), (req,res) => {
+  console.log("req.file =>",req.file);
+  console.log("archivo subido correctamente");
+})
 
-    var SheetName = excel.SheetNames; //^ devuelve un array con el nombre de hoja
-    let Data = XLSX.utils.sheet_to_json(excel.Sheets[SheetName[0]]); //& array
-    /* 
-      si se exporta en el arcivo formatos hora, estos se importaran como formato texto 
+//^^ ==========================================================
 
-    */
-
-      console.log(SheetName);
-      console.log(Data);
-
-      const filteredData = Data.map((data) => 
-          data.Title
-      )
-      console.log(filteredData);
-
-   }
-
+   dbAutenticathe()
    ExcelToJson()
-   
-
    
 app.listen(app.get('PORT'), ()=> {
  console.log("CONECTADO A http://localhost:", app.get('PORT'));

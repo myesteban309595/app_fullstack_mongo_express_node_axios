@@ -22,7 +22,6 @@ import { Table,
   import ExportCsvData from '../utils/CsvExport'
   import ExportPdfData from '../utils/PdfExport'
 //   import ExportExcelData from '../utils/ExcelExport'
-
   import ReactHTMLTableToExcel from 'react-html-table-to-excel';
   
 const URI = API.URI;
@@ -39,7 +38,13 @@ const styleshover = makeStyles({
         backgroundColor:"#F0F0F0",
         cursor: "pointer"
     }
-}
+  },
+    fileInput:{
+      "&:hover":{
+          background:"linear-gradient(to right, #acb6e5, #86fde8)",
+          cursor: "pointer"
+      },
+  }
 
 })
 const CompGetBlogs = ()=> {
@@ -48,6 +53,14 @@ const CompGetBlogs = ()=> {
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [files, setFile] = useState(null)
+
+    const handleFile=(e)=> {
+      // Getting the files from the input
+      let files = e.target.files;
+      this.setFile({ files });
+      console.log("recibiendo archivo:", files);
+    }
 
   useEffect( ()=>{
       getBlogs()
@@ -79,6 +92,31 @@ const CompGetBlogs = ()=> {
     setPage(0);
   };
 
+  const handleUpload =(e)=> {
+
+    console.log("dando click al boton");
+
+    let formData = new FormData();
+  
+    //Adding files to the formdata
+    formData.append("image", files);
+    formData.append("name", "Name");
+  
+    axios({
+      // Endpoint to send files
+      url: "http://localhost:9000/subir",
+      method: "POST",
+      // headers: {
+        // Add any auth token here
+      //   authorization: "your token comes here",
+      // },
+      // Attaching the form data
+      data: formData,
+    })
+      .then((res) => { }) // Handle the response from backend here
+      .catch((err) => { }); // Catch errors if any
+  }
+
 return(
     <Grid container justifyContent='center'>
           <TableRow>
@@ -108,6 +146,28 @@ return(
                      <i class="fa-solid fa-filter"></i>
                   </Button>
                   </Tooltip>
+
+                  <Grid container>
+                     <form action="/subir" method='post' onSubmit>
+                       <Grid container>
+                         <input type="file" 
+                                name='archivo' 
+                                multiple
+                                style={{width:350,height:30, marginLeft:400}}
+                                onChange={handleFile}
+                                className={classes.fileInput} 
+                                >
+                          </input>
+                         <Button type='submit' 
+                                 variant="outlined"
+                                 onClick={handleUpload}
+                                 style={{width:5,height:30}}
+                                 className={classes.danger} 
+                                 >POST
+                          </Button>
+                       </Grid>
+                     </form>
+                  </Grid>
                 </ButtonGroup>
                   <TableContainer>
                   <Table className='table'  id="table-row-to-excel-export" style={{minWidth:950}}>
@@ -175,6 +235,7 @@ return(
                       onRowsPerPageChange={handleChangeRowsPerPage}
                    />
           </TableRow>
+          <importExcelFile/>
       </Grid>
   )
 //^ el elemento thead contiene un bloque de filas
