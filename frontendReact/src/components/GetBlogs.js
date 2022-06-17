@@ -47,20 +47,46 @@ const styleshover = makeStyles({
   }
 
 })
+
+
 const CompGetBlogs = ()=> {
     
     const [blogs, setBlog] = useState([])
-
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [files, setFile] = useState(null)
+
+    const [file, setFile] = useState(null)
 
     const handleFile=(e)=> {
       // Getting the files from the input
-      let files = e.target.files;
-      this.setFile({ files });
-      console.log("recibiendo archivo:", files);
+      setFile(e.target.files[0]);
+      console.log("recibiendo archivo handleFile setfile:", e.target);
     }
+
+    useEffect(()=>{
+      setFile(null)
+    },[])
+
+    const handleUpload = async (e)=> {
+
+      console.log("dando click al boton");
+  
+      // if(!files){
+      //   alert('you must upload file')
+      //   return
+      // }
+  
+      const data = new FormData();
+      //Adding files to the formdata
+      //formData.append("name", "Name");
+      data.append("file", file);
+
+      await axios.post("http://localhost:9000/subir",data)
+      .then((res) => console.log(res)) 
+      .catch((err) => console.log(err))
+      // .then((res) => { }) // Handle the response from backend here
+      // .catch((err) => { }); // Catch errors if any
+    }  
 
   useEffect( ()=>{
       getBlogs()
@@ -92,31 +118,6 @@ const CompGetBlogs = ()=> {
     setPage(0);
   };
 
-  const handleUpload =(e)=> {
-
-    console.log("dando click al boton");
-
-    let formData = new FormData();
-  
-    //Adding files to the formdata
-    formData.append("image", files);
-    formData.append("name", "Name");
-  
-    axios({
-      // Endpoint to send files
-      url: "http://localhost:9000/subir",
-      method: "POST",
-      // headers: {
-        // Add any auth token here
-      //   authorization: "your token comes here",
-      // },
-      // Attaching the form data
-      data: formData,
-    })
-      .then((res) => { }) // Handle the response from backend here
-      .catch((err) => { }); // Catch errors if any
-  }
-
 return(
     <Grid container justifyContent='center'>
           <TableRow>
@@ -147,18 +148,21 @@ return(
                   </Button>
                   </Tooltip>
 
-                  <Grid container>
-                     <form action="/subir" method='post' onSubmit>
-                       <Grid container>
+                  <Grid item>
+                     <form action="#" enctype="multipart/form-data" >
+                       <Grid>
                          <input type="file" 
-                                name='archivo' 
-                                multiple
+                                name='file' 
+                                id='file'
+                                // accept='.xls'
                                 style={{width:350,height:30, marginLeft:400}}
                                 onChange={handleFile}
                                 className={classes.fileInput} 
+                                // multiple
+                                // enctype="multipart/form-data"
                                 >
                           </input>
-                         <Button type='submit' 
+                         <Button 
                                  variant="outlined"
                                  onClick={handleUpload}
                                  style={{width:5,height:30}}

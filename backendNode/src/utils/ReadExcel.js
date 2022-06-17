@@ -9,10 +9,14 @@ const __dirname = path.dirname(__filename);
 
 //* codigo que me leera el excel y lo convertira a JSON
 
-export default function ExcelToJson(){
+export default function ExcelToJson(nombreArchivo){
   
-  let pathRoute = path.join(__dirname,`../uploads/datos.xlsx`)
-  
+  console.log("nombre archivo recibido en readexcel:", nombreArchivo);
+   let nombreArchivoPath = nombreArchivo
+  //  nombreArchivoPath === undefined ? nombreArchivoPath='excel-prueba.xls' : nombreArchivoPath = nombreArchivo;
+
+  let pathRoute = path.join(__dirname,`../uploads/excelFiles/${nombreArchivoPath}`)
+  console.log("pathRoute=>",pathRoute);
   const excel = XLSX.readFile( 
       pathRoute
       //'D:\Documentos\Desktop\app_fullstack_mongo_express_node_axios\backendNode\src\datos.xlsx'

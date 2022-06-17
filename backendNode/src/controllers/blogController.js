@@ -5,7 +5,7 @@ export const GetAllBlog = async (req,res)=> {
     try { 
         const allblogs = await blogModel.find()
         res.status(200).json(allblogs)
-        console.log(allblogs);
+       // console.log(allblogs);
     } catch (error) {
         res.json({message: error.message})
     }
