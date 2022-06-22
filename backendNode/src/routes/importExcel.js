@@ -3,7 +3,9 @@ import multer from 'multer'
 import path from 'path'
 import mimeType from 'mime-types'
 import fs from 'fs'
+
 import ExcelToJson from '../utils/ReadExcel.js'
+import addImages from '../controllers/imagesController.js'
 
 const route = express.Router()
 
@@ -25,6 +27,7 @@ const diskStorage = multer.diskStorage({
         if(extensionArchivo === 'xls'){  Directory= 'excelFiles'}
         if(extensionArchivo === 'jpg' || 'tif' || 'tiff' || 'JPEG' || 'jpeg' || 'png') {Directory= 'imagesFiles'}
         if(extensionArchivo === 'pdf' ) {Directory= 'pdfFiles'}
+        if(extensionArchivo === 'docx' ) {Directory= 'wordDocumentFiles'}
 
         callback(null, path.join(__dirname,`../uploads/${Directory}`)) //^ <-------  aqui pasamos la ruta de carga
     },
@@ -47,6 +50,7 @@ console.log("extensionArchivo=>",extensionArchivo);
 console.log("req.file =>",req.file);
 
 extensionArchivo == 'xls'? ExcelToJson(nombreArchivo) : ExcelToJson('excel-prueba.xls')
+extensionArchivo == 'jpeg' || 'JPEG' || 'img' || 'png' ? addImages(nombreArchivo) : ""
 //res.send("archivos subidos correctamente:")
 })
 export default route

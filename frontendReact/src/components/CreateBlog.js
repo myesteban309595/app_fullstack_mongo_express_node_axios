@@ -119,7 +119,7 @@ const CompCreateBlog = () => {
                   <Grid container style={{width:320, marginTop:10, marginLeft:100}} direction="row"> 
                    <Grid>
                     <toolTip title="Visita GitHub" arrow>
-                      <Button href="https://github.com/myesteban309595/AppCRUD-fullstack-react-node-express-sequelize" 
+                      <Button href="https://github.com/myesteban309595/app_fullstack_mongo_express_node_axios" 
                          variant="outlined"
                          ><i class="fa-brands fa-github"></i>
                       </Button>
