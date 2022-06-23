@@ -1,5 +1,7 @@
 import {mongoose} from 'mongoose'
 import blogModels from '../models/blogmodel.js'
+import usersModel from '../models/users.model.js';
+import UserModel from '../models/users.model.js'
 
 const database = 'fullstack_mongo_database'
 
@@ -39,6 +41,19 @@ const db =
         model2.save()
         model3.save()
 
+    }
+
+    const existsUser = await usersModel.find();
+
+    if(existsUser.length === 0){
+        new UserModel({
+            name:"marlon yoel",
+            lastName: "esteban valencia",
+            age: 26,
+            phone: "3102345677",
+            email: "maryoe_95@outlook.com",
+            admin: true
+         }).save()
     }
 
 })();
